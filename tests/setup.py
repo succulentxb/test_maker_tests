@@ -2,6 +2,8 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 import time
 
+ADMIN_INDEX_URL_PREFIX = "http://gc21131138.imwork.net:20430/test-maker/web/admin"
+MAIN_INDEX_URL_PREFIX = "http://gc21131138.imwork.net:20430/test-maker/web/client"
 ADMIN_INDEX_URL = "http://gc21131138.imwork.net:20430/test-maker/web/admin/index.action"
 MAIN_INDEX_URL = "http://gc21131138.imwork.net:20430/test-maker/web/client/index.action"
 
@@ -40,6 +42,40 @@ def main_setup():
     pj_list_select.select_by_visible_text(GROUP_NAME)
     login_btn.click()
     return driver
+
+
+def admin_user_btn_click(driver):
+    users_btn = None
+    while users_btn is None:
+        try:
+            time.sleep(1)
+            users_btn = driver.find_element_by_xpath('//*[@id="navigation-panel"]/ul/li[2]/a')
+        except Exception as e:
+            print(e)
+    users_btn.click()
+
+
+def get_confirm_box_btns(driver):
+    btns = []
+    while len(btns) != 2:
+        try:
+            btns = driver.find_elements_by_css_selector(".bootstrap-dialog-footer-buttons > button")
+            time.sleep(1)
+        except Exception as e:
+            print(e)
+    return btns
+
+
+def success_btn_click(driver):
+    time.sleep(1)
+    btn = None
+    while btn is None:
+        try:
+            btn = driver.find_element_by_css_selector(".bootstrap-dialog-footer-buttons > button")
+            time.sleep(1)
+        except Exception as e:
+            print(e)
+    btn.click()
 
 
 if __name__ == "__main__":
