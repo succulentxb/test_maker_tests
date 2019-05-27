@@ -99,6 +99,32 @@ class PjInfoTest(unittest.TestCase):
         assert submit_btn is not None
         submit_btn.click()
 
+    def test_check_pj_(self):
+        PjInfoTest.pjs_btn_click()
+
+        first_item_detail_btn = PjInfoTest.driver.find_element_by_css_selector("#project-table-body > tr:nth-child(1) > td:nth-child(10) > a.view-item > i")
+        assert first_item_detail_btn is not None
+        first_item_detail_btn.click()
+
+        time.sleep(5)
+        quit_btn = PjInfoTest.driver.find_element_by_css_selector("body > div.modal.fade.in > div > div > div.modal-footer > button")
+        assert quit_btn is not None
+
+    def test_import_pj(self):
+        PjInfoTest.pjs_btn_click()
+
+        first_item_import_btn = PjInfoTest.driver.find_element_by_css_selector("#project-table-body > tr:nth-child(1) > td:nth-child(10) > a.export-item > i")
+        assert first_item_import_btn is not None
+        first_item_import_btn.click()
+
+        confirm_btn = PjInfoTest.driver.find_element_by_css_selector("body > div.bootstrap-dialog > div > div > div.modal-footer > div > div > button:nth-child(2)")
+        assert confirm_btn is not None
+        confirm_btn.click()
+
+        confirm_btn = PjInfoTest.driver.find_element_by_css_selector("body > div.bootstrap-dialog > div > div > div.modal-footer > div > div > button")
+        assert confirm_btn is not None
+        confirm_btn.click()
+
 
 if __name__ == "__main__":
     try:

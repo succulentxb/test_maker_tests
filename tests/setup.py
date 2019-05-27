@@ -25,6 +25,18 @@ def admin_setup():
     return driver
 
 
+def admin_wrong_setup():
+    driver = webdriver.Chrome()
+    driver.get(ADMIN_INDEX_URL)
+    username_input = driver.find_element_by_id("username")
+    pass_input = driver.find_element_by_id("password")
+    login_btn = driver.find_element_by_id("login-button")
+    username_input.send_keys("illegal")
+    pass_input.send_keys("illegal")
+    login_btn.click()
+    return driver
+
+
 def main_setup():
     driver = webdriver.Chrome()
     driver.get(MAIN_INDEX_URL)
