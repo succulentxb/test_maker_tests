@@ -106,15 +106,16 @@ def read_users():
         return []
 
 
-def gen_result(thread_ids, test_setting):
+def gen_result(thread_ids, setting):
     try:
         results = []
         for thread_id in thread_ids:
             f = open(os.path.join("result", str(thread_id)+".json"))
             results.append(json.loads(f.read()))
             f.close()
-        result_file = open(os.path.join("result", test_setting["tester"] + "_" + str(test_setting["test_user_count"]) + "_result.json"), "w+")
-        res_to_write = {"meta": test_setting, "result": results}
+        result_file = open(os.path.join("result", setting["tester"] + "_"
+                                        + str(setting["test_user_count"]) + str(setting["timestamp"]) + "_result.json"), "w+")
+        res_to_write = {"meta": setting, "result": results}
         result_file.write(json.dumps(res_to_write, indent=4))
         result_file.close()
         print("result file generate done!")
@@ -129,7 +130,8 @@ if __name__ == "__main__":
         "request_latency": 0,
         "tester": "liuxinbiao",
         "test_user_count": 10,
-        "time": time.strftime("%Y-%m-%d %H:%M:%S")
+        "time": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "timestamp": int(time.time())
     }
     users_input = read_users()
     group = LoadTestThreadGroup(users_input, test_setting)
