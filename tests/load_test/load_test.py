@@ -44,11 +44,11 @@ class LoadTestThread(threading.Thread):
 
 class LoadTestThreadGroup:
     # latency 为相邻线程之间启动时间间隔
-    def __init__(self, users, latency=0.1, run_time=1, request_latency=0.1):
+    def __init__(self, users, setting):
         self.users = users
-        self.latency = latency
-        self.run_time = run_time
-        self.request_lat = request_latency
+        self.latency = setting.get("thread_latency")
+        self.run_time = setting.get("request_time")
+        self.request_lat = setting.get("request_latency")
         self.thread_ids = []
 
     def run(self):
@@ -106,15 +106,16 @@ def read_users():
         return []
 
 
-def gen_result(thread_ids):
+def gen_result(thread_ids, test_setting):
     try:
         results = []
         for thread_id in thread_ids:
             f = open(os.path.join("result", str(thread_id)+".json"))
             results.append(json.loads(f.read()))
             f.close()
-        result_file = open(os.path.join("result", "result.json"), "w+")
-        result_file.write(json.dumps(results, indent=4))
+        result_file = open(os.path.join("result", test_setting["tester"] + "_" + str(test_setting["test_user_count"]) + "_result.json"), "w+")
+        res_to_write = {"meta": test_setting, "result": results}
+        result_file.write(json.dumps(res_to_write, indent=4))
         result_file.close()
         print("result file generate done!")
     except FileNotFoundError as e:
@@ -122,7 +123,15 @@ def gen_result(thread_ids):
 
 
 if __name__ == "__main__":
+    test_setting = {
+        "thread_latency": 0,
+        "request_time": 10,
+        "request_latency": 0,
+        "tester": "liuxinbiao",
+        "test_user_count": 10,
+        "time": time.strftime("%Y-%m-%d %H:%M:%S")
+    }
     users_input = read_users()
-    group = LoadTestThreadGroup(users_input, latency=0, run_time=30, request_latency=0)
+    group = LoadTestThreadGroup(users_input, test_setting)
     group.run()
-    gen_result(group.thread_ids)
+    gen_result(group.thread_ids, test_setting)

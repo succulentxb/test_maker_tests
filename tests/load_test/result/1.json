@@ -1,46 +1,46 @@
 {
     "thread_id": 1,
-    "login_time": 318,
+    "login_time": 2215,
     "results": [
         {
             "run_time": 1,
-            "welcome_latency": 247
+            "welcome_latency": 438
         },
         {
             "run_time": 2,
-            "welcome_latency": 102
+            "welcome_latency": 160
         },
         {
             "run_time": 3,
-            "welcome_latency": 362
+            "welcome_latency": 623
         },
         {
             "run_time": 4,
-            "welcome_latency": 262
+            "welcome_latency": 156
         },
         {
             "run_time": 5,
-            "welcome_latency": 190
+            "welcome_latency": 847
         },
         {
             "run_time": 6,
-            "welcome_latency": 125
+            "welcome_latency": 436
         },
         {
             "run_time": 7,
-            "welcome_latency": 715
+            "welcome_latency": 526
         },
         {
             "run_time": 8,
-            "welcome_latency": 266
+            "welcome_latency": 212
         },
         {
             "run_time": 9,
-            "welcome_latency": 677
+            "welcome_latency": 790
         },
         {
             "run_time": 10,
-            "welcome_latency": 155
+            "welcome_latency": 281
         }
     ]
 }
