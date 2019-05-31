@@ -28,20 +28,15 @@ class LoadTestThread(threading.Thread):
 
     def run(self):
         results = []
-        login_time = -1
-        try:
-            if not self.session:
-                self.session = requests.Session()
-            login_time = login(self.username, self.password, self.session)
+        if not self.session:
+            self.session = requests.Session()
+        login_time = login(self.username, self.password, self.session)
 
-            for i in range(self.run_time):
-                wel_time = get_welcome(self.session)
-                results.append({"run_time": i+1, "welcome_latency": wel_time})
-                time.sleep(self.latency)
-        except RemoteDisconnected:
-            print("[ERROR] server wrong")
-        except Exception as e:
-            print("[ERROR] unknown error=%s" % e)
+        for i in range(self.run_time):
+            wel_time = get_welcome(self.session)
+            results.append({"run_time": i+1, "welcome_latency": wel_time})
+            time.sleep(self.latency)
+
         f = open(os.path.join("result", str(self.thread_id) + ".json"), "w+")
         f.write(json.dumps({"thread_id": self.thread_id, "login_time": login_time, "results": results}, indent=4))
         f.close()
@@ -80,20 +75,26 @@ def login(username, password, session):
         "password": password
     }
     start = int(time.time() * 1000)
-    response = session.post(url=LOGIN_URL, json=login_data)
-    if response.status_code != 200:
+    try:
+        response = session.post(url=LOGIN_URL, json=login_data)
+        if response.status_code != 200:
+            return -1
+        end = int(time.time() * 1000)
+        return end-start
+    except RemoteDisconnected:
         return -1
-    end = int(time.time() * 1000)
-    return end-start
 
 
 def get_welcome(session):
     start = int(time.time() * 1000)
-    response = session.get(url=WELCOME_URL)
-    if response.status_code != 200:
+    try:
+        response = session.get(url=WELCOME_URL)
+        if response.status_code != 200:
+            return -1
+        end = int(time.time() * 1000)
+        return end-start
+    except RemoteDisconnected:
         return -1
-    end = int(time.time() * 1000)
-    return end-start
 
 
 def read_users():
