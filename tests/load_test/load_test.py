@@ -23,12 +23,15 @@ class LoadTestThread(threading.Thread):
         self.password = password
         self.run_time = run_time
         self.latency = latency
+        self.session = None
 
     def run(self):
-        login_time = login(self.username, self.password)
+        if not self.session:
+            self.session = requests.Session()
+        login_time = login(self.username, self.password, self.session)
         results = []
         for i in range(self.run_time):
-            wel_time = get_welcome()
+            wel_time = get_welcome(self.session)
             results.append({"run_time": i+1, "welcome_latency": wel_time})
             time.sleep(self.latency)
 
@@ -64,22 +67,22 @@ class LoadTestThreadGroup:
         print("test done!")
 
 
-def login(username, password):
+def login(username, password, session):
     login_data = {
         "username": username,
         "password": password
     }
     start = int(time.time() * 1000)
-    response = requests.post(url=LOGIN_URL, json=login_data)
+    response = session.post(url=LOGIN_URL, json=login_data)
     if response.status_code != 200:
         return -1
     end = int(time.time() * 1000)
     return end-start
 
 
-def get_welcome():
+def get_welcome(session):
     start = int(time.time() * 1000)
-    response = requests.get(url=WELCOME_URL)
+    response = session.get(url=WELCOME_URL)
     if response.status_code != 200:
         return -1
     end = int(time.time() * 1000)
