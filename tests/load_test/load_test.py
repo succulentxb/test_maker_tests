@@ -2,6 +2,7 @@ import time
 import json
 import threading
 import os
+from http.client import RemoteDisconnected
 
 import requests
 
@@ -26,16 +27,22 @@ class LoadTestThread(threading.Thread):
         self.session = None
 
     def run(self):
-        if not self.session:
-            self.session = requests.Session()
-        login_time = login(self.username, self.password, self.session)
         results = []
-        for i in range(self.run_time):
-            wel_time = get_welcome(self.session)
-            results.append({"run_time": i+1, "welcome_latency": wel_time})
-            time.sleep(self.latency)
+        login_time = -1
+        try:
+            if not self.session:
+                self.session = requests.Session()
+            login_time = login(self.username, self.password, self.session)
 
-        f = open(os.path.join("result", str(self.thread_id)+".json"), "w+")
+            for i in range(self.run_time):
+                wel_time = get_welcome(self.session)
+                results.append({"run_time": i+1, "welcome_latency": wel_time})
+                time.sleep(self.latency)
+        except RemoteDisconnected:
+            print("[ERROR] server wrong")
+        except Exception as e:
+            print("[ERROR] unknown error=%s" % e)
+        f = open(os.path.join("result", str(self.thread_id) + ".json"), "w+")
         f.write(json.dumps({"thread_id": self.thread_id, "login_time": login_time, "results": results}, indent=4))
         f.close()
 
@@ -115,6 +122,6 @@ def gen_result(thread_ids):
 
 if __name__ == "__main__":
     users_input = read_users()
-    group = LoadTestThreadGroup(users_input, latency=0, run_time=100, request_latency=0)
+    group = LoadTestThreadGroup(users_input, latency=0, run_time=30, request_latency=0)
     group.run()
     gen_result(group.thread_ids)
