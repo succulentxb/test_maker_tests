@@ -1,0 +1,10 @@
+{
+    "thread_id": 2,
+    "login_time": 306,
+    "results": [
+        {
+            "run_time": 1,
+            "welcome_latency": 227
+        }
+    ]
+}

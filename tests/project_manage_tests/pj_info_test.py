@@ -99,7 +99,7 @@ class PjInfoTest(unittest.TestCase):
         assert submit_btn is not None
         submit_btn.click()
 
-    def test_check_pj_(self):
+    def test_check_pj_detail(self):
         PjInfoTest.pjs_btn_click()
 
         first_item_detail_btn = PjInfoTest.driver.find_element_by_css_selector("#project-table-body > tr:nth-child(1) > td:nth-child(10) > a.view-item > i")
