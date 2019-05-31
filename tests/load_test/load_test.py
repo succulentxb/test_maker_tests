@@ -44,11 +44,13 @@ class LoadTestThreadGroup:
         self.latency = latency
         self.run_time = run_time
         self.request_lat = request_latency
+        self.thread_ids = []
 
     def run(self):
         threads = []
         for i in range(len(self.users)):
             print("starting thread " + str(i+1) + "...")
+            self.thread_ids.append(i+1)
             username = self.users[i].get("username")
             password = self.users[i].get("password")
             thread = LoadTestThread(username, password, i+1, self.run_time, self.request_lat)
@@ -93,7 +95,23 @@ def read_users():
         return []
 
 
+def gen_result(thread_ids):
+    try:
+        results = []
+        for thread_id in thread_ids:
+            f = open(os.path.join("result", str(thread_id)+".json"))
+            results.append(json.loads(f.read()))
+            f.close()
+        result_file = open(os.path.join("result", "result.json"), "w+")
+        result_file.write(json.dumps(results, indent=4))
+        result_file.close()
+        print("result file generate done!")
+    except FileNotFoundError as e:
+        print("[ERROR] failed generate result, error=%s" % e)
+
+
 if __name__ == "__main__":
     users_input = read_users()
-    group = LoadTestThreadGroup(users_input)
+    group = LoadTestThreadGroup(users_input, latency=0, run_time=100, request_latency=0)
     group.run()
+    gen_result(group.thread_ids)
